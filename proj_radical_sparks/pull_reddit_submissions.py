@@ -53,12 +53,12 @@ class reddit_submission():
 
     def process_reddit_data(self, file):
 
-        dfComment = pd.DataFrame(columns=['id', 'timestamp', 'author', 'body', 'title'])
         index_loop = 0
 
         submission_ids_list, submission_titles = self.get_submission_ids(file)
 
         for submission_id, submission_title in zip(submission_ids_list, submission_titles):
+            dfComment = pd.DataFrame(columns=['id', 'timestamp', 'author', 'body', 'title'])
             submission = self.reddit.submission(submission_id)
             submission.comments.replace_more(limit=None)
 
@@ -73,7 +73,7 @@ class reddit_submission():
             dfComment['dt'] = pd.to_datetime(dfComment['timestamp']).dt.strftime('%Y-%m-%d')
             dfComment['author'] = dfComment['author'].apply(lambda x: str(x))
 
-            data_folder = f'./proj_radical_sparks/reddit_data/{submission_id}/'
+            data_folder = f'./proj_radical_sparks/reddit_data_folder/{submission_id}/'
 
             if not os.path.exists(data_folder):
                 os.makedirs(data_folder)
@@ -87,6 +87,8 @@ class reddit_submission():
                 arrow_table = pa.Table.from_pandas(dfComment_daily)
                 file_path = os.path.join(data_folder, file_name)
                 pq.write_table(arrow_table, file_path)
+            
+            del dfComment
 
         return None
 
