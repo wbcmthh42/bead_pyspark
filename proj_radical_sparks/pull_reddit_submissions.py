@@ -1,7 +1,7 @@
 from datetime import datetime
 import pandas as pd
 import praw
-import json
+# import json
 import pyarrow as pa
 import pyarrow.parquet as pq
 
@@ -41,7 +41,17 @@ class reddit_submission():
             password=os.getenv("REDDIT_PASSWORD")
         )
     
+    def retrieve_list_of_submission_id(self, subreddit_name_list, limit, file_path):
+        submissions = []
 
+        for subreddit_name in subreddit_name_list:
+            for submission in self.reddit.subreddit(subreddit_name).new(limit=limit):
+                submissions.append(submission.id)
+                pd.DataFrame(submissions).to_csv(file_path)
+            
+        return submissions
+    
+    
     def get_submission_ids(self, file):
 
         df = pd.read_csv(file)
@@ -95,4 +105,5 @@ class reddit_submission():
 
 if __name__ == "__main__":
     get_reddit_data = reddit_submission()
+    # get_reddit_data.retrieve_list_of_submission_id(['Singapore'], 100, './proj_radical_sparks/new_100_submission.csv')
     get_reddit_data.process_reddit_data('./proj_radical_sparks/new_100_submission.csv')
