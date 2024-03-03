@@ -26,13 +26,6 @@ class reddit_submission():
         self.username = os.getenv("REDDIT_USERNAME")
         self.password = os.getenv("REDDIT_PASSWORD")
 
-        # self.reddit = praw.Reddit(
-        #     self.client_id,
-        #     self.client_secret,
-        #     self.user_agent,
-        #     self.username,
-        #     self.password
-        #     )
         self.reddit = praw.Reddit(
             client_id=os.getenv("CLIENT_ID"),
             client_secret=os.getenv("SECRET_KEY"),
