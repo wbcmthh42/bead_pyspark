@@ -9,9 +9,21 @@ from dotenv import load_dotenv
 
 class load_to_mysql():
     def __init__(self):
+        """
+        Constructor for the class.
+        """
         pass
 
     def parquet_to_df(self, parquet_folder):
+        """
+        Read Parquet files from the specified folder and its subfolders, and concatenate the data into a single DataFrame.
+        
+        Parameters:
+            parquet_folder (str): The path to the folder containing Parquet files.
+        
+        Returns:
+            pandas.DataFrame: A DataFrame containing the combined data from all the Parquet files.
+        """
 
         # Get a list of all Parquet files in the folder and its subfolders
         parquet_files = glob.glob(os.path.join(parquet_folder, '**/*.parquet'), recursive=True)
@@ -29,6 +41,9 @@ class load_to_mysql():
         return self.df_combined
 
     def save_to_mysql(self):
+        """
+        Save data to a MySQL database using environment variables from a .env file. 
+        """
 
         # Load environment variables from .env file
         load_dotenv('/Users/johnnytay/Library/CloudStorage/OneDrive-Personal/My NUS Mtech EBAC course/Semester 3/Practice Module/bead_pyspark/.env')

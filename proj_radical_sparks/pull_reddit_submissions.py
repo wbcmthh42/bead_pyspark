@@ -11,20 +11,14 @@ import os
 
 class reddit_submission():
     def __init__(self):
+        """
+        Initialize the class with environment variables loaded from the .env file.
+        Set instance variables for database connection details, client ID, client secret, user agent, Reddit username, and password.
+        Initialize a Reddit instance using the provided credentials.
+        """
 
         # Load environment variables from .env file
         load_dotenv('.env')
-
-        # Access the environment variables
-        self.db_host = os.getenv("DB_HOST")
-        self.db_user = os.getenv("DB_USER")
-        self.db_password = os.getenv("DB_PASSWORD")
-        self.db_database = os.getenv("DB_DATABASE")
-        self.client_id = os.getenv("CLIENT_ID")
-        self.client_secret = os.getenv("SECRET_KEY")
-        self.user_agent = os.getenv("REDDIT_GRANT_TYPE")
-        self.username = os.getenv("REDDIT_USERNAME")
-        self.password = os.getenv("REDDIT_PASSWORD")
 
         self.reddit = praw.Reddit(
             client_id=os.getenv("CLIENT_ID"),
@@ -35,6 +29,14 @@ class reddit_submission():
         )
     
     def retrieve_list_of_submission_id(self, subreddit_name_list, limit, file_path):
+        """
+        Retrieves a list of submission IDs from the specified subreddits and saves them to a CSV file.
+
+        :param subreddit_name_list: List of subreddit names to retrieve submissions from
+        :param limit: Maximum number of submissions to retrieve per subreddit
+        :param file_path: Path to the CSV file to save the submission IDs
+        :return: List of submission IDs
+        """
         submissions = []
 
         for subreddit_name in subreddit_name_list:
@@ -46,6 +48,15 @@ class reddit_submission():
     
     
     def get_submission_ids(self, file):
+        """
+        Retrieves the submission ids and titles from the given CSV file.
+
+        Parameters:
+            file (str): The path to the CSV file.
+
+        Returns:
+            tuple: A tuple containing two lists - submission_ids and submission_titles.
+        """
 
         df = pd.read_csv(file)
         submission_ids = df['submission_id'].tolist()
@@ -55,6 +66,16 @@ class reddit_submission():
     
 
     def process_reddit_data(self, file):
+        """
+        Process Reddit data from a given file and store it in a structured format for analysis.
+        
+        Args:
+            self: The class instance.
+            file: The file containing the Reddit data to be processed.
+        
+        Returns:
+            None
+        """
 
         index_loop = 0
 

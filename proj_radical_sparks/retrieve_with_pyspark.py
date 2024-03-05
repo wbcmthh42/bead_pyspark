@@ -4,9 +4,21 @@ from pyspark.sql import SparkSession
 
 class data_retrieval():
     def __init__(self):
+        """
+        Initialize the object.
+        """
         pass
 
     def get_data(self, file_path):
+        """
+        Method to get data from a MySQL database using SparkSession.
+
+        Args:
+            file_path (str): The path to the .env file containing environment variables.
+
+        Returns:
+            DataFrame: The data retrieved from the MySQL database.
+        """
 
         # Load environment variables from .env file
         load_dotenv(file_path)
