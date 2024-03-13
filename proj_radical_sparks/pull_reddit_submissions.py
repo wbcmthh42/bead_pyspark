@@ -18,7 +18,7 @@ class reddit_submission():
         """
 
         # Load environment variables from .env file
-        load_dotenv('.env')
+        load_dotenv('/Users/johnnytay/Library/CloudStorage/OneDrive-Personal/My NUS Mtech EBAC course/Semester 3/Practice Module/bead_pyspark/.env')
 
         self.reddit = praw.Reddit(
             client_id=os.getenv("CLIENT_ID"),
@@ -120,4 +120,4 @@ class reddit_submission():
 if __name__ == "__main__":
     get_reddit_data = reddit_submission()
     # get_reddit_data.retrieve_list_of_submission_id(['Singapore'], 100, './proj_radical_sparks/new_100_submission.csv')
-    get_reddit_data.process_reddit_data('./proj_radical_sparks/new_100_submission.csv')
+    get_reddit_data.process_reddit_data('/Users/johnnytay/Library/CloudStorage/OneDrive-Personal/My NUS Mtech EBAC course/Semester 3/Practice Module/bead_pyspark/proj_radical_sparks/new_100_submission.csv')

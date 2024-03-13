@@ -66,10 +66,10 @@ class load_to_mysql():
         engine = create_engine('mysql+pymysql://user:passwd@host/database')
         # Create the table
         mycursor.execute(
-            "CREATE TABLE proj_radical_sparks (id VARCHAR(255), timestamp TIMESTAMP, author VARCHAR(255), body TEXT, title TEXT,  date DATE)"
+            "CREATE TABLE proj_radical_sparks3 (id VARCHAR(255), timestamp TIMESTAMP, author VARCHAR(255), body TEXT, title TEXT,  date DATE)"
         )
 
-        sqlFormula = "INSERT INTO proj_radical_sparks (id, timestamp, author, body, title, date) VALUES (%s, %s, %s, %s, %s, %s)"
+        sqlFormula = "INSERT INTO proj_radical_sparks3 (id, timestamp, author, body, title, date) VALUES (%s, %s, %s, %s, %s, %s)"
 
         # Insert DataFrame data into the MySQL table
         mycursor.executemany(sqlFormula, self.df_combined.values.tolist())
