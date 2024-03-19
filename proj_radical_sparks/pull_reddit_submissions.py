@@ -97,7 +97,7 @@ class reddit_submission():
             dfComment['dt'] = pd.to_datetime(dfComment['timestamp']).dt.strftime('%Y-%m-%d')
             dfComment['author'] = dfComment['author'].apply(lambda x: str(x))
 
-            data_folder = f'./proj_radical_sparks/reddit_data_folder/{submission_id}/'
+            data_folder = f'./reddit_data_folder/{submission_id}/'
 
             if not os.path.exists(data_folder):
                 os.makedirs(data_folder)
