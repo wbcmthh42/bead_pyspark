@@ -14,14 +14,14 @@ class LLMClassification():
         self.env_file_path = env_file_path
         pass
 
-    def get_processed_df(self):
+    def get_processed_df(self, n):
         """
         Method to retrieve a processed DataFrame. 
         This method initializes a DataProcessing object and retrieves a clean table. 
         """
         dr = DataProcessing()
         df = dr.get_clean_table(self.env_file_path)
-        return df.limit(50) #limit to 50 rows to test so that it runs faster and its cheaper to run and we dont have to run the entire table through openai api
+        return df.limit(n) #limit to n rows to test so that it runs faster and its cheaper to run and we dont have to run the entire table through openai api
 
     def llm_classification(self, text):
         """
@@ -104,6 +104,6 @@ class LLMClassification():
 
 if __name__ == '__main__':
     llm = LLMClassification('.env')
-    df = llm.get_processed_df()
+    df = llm.get_processed_df(50) #use first 50 rows to test first
     llm.get_radical_class_df(df)
 
