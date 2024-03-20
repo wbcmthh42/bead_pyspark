@@ -18,14 +18,15 @@ class reddit_submission():
         """
 
         # Load environment variables from .env file
-        load_dotenv('/Users/johnnytay/Library/CloudStorage/OneDrive-Personal/My NUS Mtech EBAC course/Semester 3/Practice Module/bead_pyspark/.env')
+        load_dotenv('/Users/des/Desktop/bead_pyspark/proj_radical_sparks/.env')
+        print(os.getenv('CLIENT_ID'))
 
         self.reddit = praw.Reddit(
-            client_id=os.getenv("CLIENT_ID"),
-            client_secret=os.getenv("SECRET_KEY"),
-            user_agent=os.getenv("REDDIT_GRANT_TYPE"),
-            username=os.getenv("REDDIT_USERNAME"),
-            password=os.getenv("REDDIT_PASSWORD")
+            client_id=os.getenv('CLIENT_ID'),
+            client_secret=os.getenv('SECRET_KEY'),
+            user_agent=os.getenv('REDDIT_GRANT_TYPE'),
+            username=os.getenv('REDDIT_USERNAME'),
+            password=os.getenv('REDDIT_PASSWORD')
         )
     
     def retrieve_list_of_submission_id(self, subreddit_name_list, limit, file_path):
@@ -82,16 +83,20 @@ class reddit_submission():
         submission_ids_list, submission_titles = self.get_submission_ids(file)
 
         for submission_id, submission_title in zip(submission_ids_list, submission_titles):
-            dfComment = pd.DataFrame(columns=['id', 'timestamp', 'author', 'body', 'title'])
+            dfComment = pd.DataFrame(columns=['submission_id', 'comment_id', 'timestamp', 'author', 'body', 'submission','upvotes', 'upvote_ratio'])
             submission = self.reddit.submission(submission_id)
             submission.comments.replace_more(limit=None)
 
             for comment in submission.comments.list():
-                dfComment.loc[index_loop, 'id'] = comment.id
+                dfComment.loc[index_loop, 'submission_id'] = submission_id
+                dfComment.loc[index_loop, 'comment_id'] = comment.id
                 dfComment.loc[index_loop, "timestamp"] = datetime.utcfromtimestamp(comment.created_utc)
                 dfComment.loc[index_loop, 'author'] = str(comment.author)
                 dfComment.loc[index_loop, 'body'] = comment.body
-                dfComment.loc[index_loop, 'title'] = submission_title
+                dfComment.loc[index_loop, 'submission'] = submission_title
+                dfComment.loc[index_loop, 'upvotes'] = submission.score
+                dfComment.loc[index_loop, 'upvote_ratio'] = submission.upvote_ratio
+
                 index_loop += 1
 
             dfComment['dt'] = pd.to_datetime(dfComment['timestamp']).dt.strftime('%Y-%m-%d')
@@ -120,4 +125,4 @@ class reddit_submission():
 if __name__ == "__main__":
     get_reddit_data = reddit_submission()
     # get_reddit_data.retrieve_list_of_submission_id(['Singapore'], 100, './proj_radical_sparks/new_100_submission.csv')
-    get_reddit_data.process_reddit_data('/Users/johnnytay/Library/CloudStorage/OneDrive-Personal/My NUS Mtech EBAC course/Semester 3/Practice Module/bead_pyspark/proj_radical_sparks/new_100_submission.csv')
+    get_reddit_data.process_reddit_data('/Users/des/Desktop/bead_pyspark/proj_radical_sparks/new_100_submission.csv')
