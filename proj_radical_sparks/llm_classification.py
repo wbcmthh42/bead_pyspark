@@ -21,7 +21,7 @@ class LLMClassification():
         """
         dr = DataProcessing()
         df = dr.get_clean_table(self.env_file_path)
-        return df.limit(20) #limit to 20 rows to test so that it runs faster and its cheaper to run and we dont have to run the entire table through openai api
+        return df.limit(50) #limit to 50 rows to test so that it runs faster and its cheaper to run and we dont have to run the entire table through openai api
 
     def llm_classification(self, text):
         """
@@ -71,18 +71,35 @@ class LLMClassification():
         """
         This function applies the given UDF to the 'body_cleaned' and 'title_cleaned' columns of the input DataFrame and returns the modified DataFrame.
         """
-        df = df.withColumn('chk_radical_post_(body_cleaned)', chk_radical_udf(df['body_cleaned']))
-        df = df.withColumn('chk_radical_post_(submission_cleaned)', chk_radical_udf(df['submission_cleaned']))
+        df = df.withColumn('chk_radical_post_body', chk_radical_udf(df['body_cleaned']))
+        df = df.withColumn('chk_radical_post_submission', chk_radical_udf(df['submission_cleaned']))
         return df
 
     def get_radical_class_df(self, df):
         """
-        This function takes a DataFrame as input and applies radical classification to it using the provided UDF. It then displays the resulting DataFrame and returns it.
+        This function takes a DataFrame as input and applies radical classification to it using the provided UDF. It then saves the resulting DataFrame to MySQL and returns it.
         """
+        # Load environment variables from .env file
+        load_dotenv(self.env_file_path)
+
+        # Access the environment variables
+        db_host = os.getenv("DB_HOST")
+        db_user = os.getenv("DB_USER")
+        db_password = os.getenv("DB_PASSWORD")
+        db_database = os.getenv("DB_DATABASE")
+        
         chk_radical_udf = udf(self.llm_classification, StringType())
         df = self.radical_classification(df, chk_radical_udf)
-        df.show()
+        df.write.format('jdbc').options(
+            url='jdbc:mysql://localhost:3306/testdb',
+            driver='com.mysql.cj.jdbc.Driver',
+            dbtable='radical_classification',
+            user=db_user,
+            password=db_password
+        ).mode('overwrite').save()
+
         return df
+
 
 
 if __name__ == '__main__':
