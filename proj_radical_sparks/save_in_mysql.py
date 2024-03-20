@@ -66,7 +66,7 @@ class load_to_mysql():
         engine = create_engine('mysql+pymysql://user:passwd@host/database')
         # Create the table
         mycursor.execute(
-            "CREATE TABLE proj_radical_sparks4 (submission_id VARCHAR(255), comment_id VARCHAR(255), timestamp TIMESTAMP, author VARCHAR(255), body TEXT, submission TEXT, upvotes VARCHAR(255), upvote_ratio VARCHAR(255), date DATE)"
+            "CREATE TABLE proj_radical_sparks4 (submission_id VARCHAR(255), comment_id VARCHAR(255), timestamp TIMESTAMP, author VARCHAR(255), body TEXT, submission TEXT, upvotes INTEGER(10), upvote_ratio VARCHAR(255), date DATE)"
         )
 
         sqlFormula = "INSERT INTO proj_radical_sparks4 (submission_id, comment_id, timestamp, author, body, submission, upvotes, upvote_ratio, date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
