@@ -8,10 +8,11 @@ from dotenv import load_dotenv
 
 
 class load_to_mysql():
-    def __init__(self):
+    def __init__(self, env_file_path):
         """
         Constructor for the class.
         """
+        self.env_file_path = env_file_path
         pass
 
     def parquet_to_df(self, parquet_folder):
@@ -46,7 +47,7 @@ class load_to_mysql():
         """
 
         # Load environment variables from .env file
-        load_dotenv('/Users/johnnytay/Library/CloudStorage/OneDrive-Personal/My NUS Mtech EBAC course/Semester 3/Practice Module/bead_pyspark/.env')
+        load_dotenv(self.env_file_path)
 
         # Access the environment variables
         db_host = os.getenv("DB_HOST")
@@ -66,10 +67,10 @@ class load_to_mysql():
         engine = create_engine('mysql+pymysql://user:passwd@host/database')
         # Create the table
         mycursor.execute(
-            "CREATE TABLE proj_radical_sparks3 (id VARCHAR(255), timestamp TIMESTAMP, author VARCHAR(255), body TEXT, title TEXT,  date DATE)"
+            "CREATE TABLE proj_radical_sparks (submission_id VARCHAR(255), comment_id VARCHAR(255), timestamp TIMESTAMP, author VARCHAR(255), body TEXT, submission TEXT, upvotes VARCHAR(255), upvote_ratio VARCHAR(255), date DATE)"
         )
 
-        sqlFormula = "INSERT INTO proj_radical_sparks3 (id, timestamp, author, body, title, date) VALUES (%s, %s, %s, %s, %s, %s)"
+        sqlFormula = "INSERT INTO proj_radical_sparks (submission_id, comment_id, timestamp, author, body, submission, upvotes, upvote_ratio, date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
         # Insert DataFrame data into the MySQL table
         mycursor.executemany(sqlFormula, self.df_combined.values.tolist())
@@ -78,6 +79,6 @@ class load_to_mysql():
 
 
 if __name__ == "__main__":
-    tomysql = load_to_mysql()
-    tomysql.parquet_to_df('../proj_radical_sparks/reddit_data_folder/')
+    tomysql = load_to_mysql('.env')
+    tomysql.parquet_to_df('./reddit_data_folder/')
     tomysql.save_to_mysql()

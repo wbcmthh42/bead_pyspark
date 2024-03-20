@@ -7,10 +7,11 @@ import os
 
 
 class LLMClassification():
-    def __init__(self):
+    def __init__(self, env_file_path):
         """
         Constructor for the class.
         """
+        self.env_file_path = env_file_path
         pass
 
     def get_processed_df(self):
@@ -19,7 +20,7 @@ class LLMClassification():
         This method initializes a DataProcessing object and retrieves a clean table. 
         """
         dr = DataProcessing()
-        df = dr.get_clean_table()
+        df = dr.get_clean_table(self.env_file_path)
         return df.limit(20) #limit to 20 rows to test so that it runs faster and its cheaper to run and we dont have to run the entire table through openai api
 
     def llm_classification(self, text):
@@ -28,7 +29,7 @@ class LLMClassification():
         It takes 'text' as input and returns the classification output. 
         """
         # Load environment variables from .env file
-        file_path = '/Users/johnnytay/Library/CloudStorage/OneDrive-Personal/My NUS Mtech EBAC course/Semester 3/Practice Module/bead_pyspark/.env'
+        file_path = self.env_file_path
         load_dotenv(file_path)
         openai.api_key = os.getenv('OPENAI_API_KEY')
 
@@ -71,7 +72,7 @@ class LLMClassification():
         This function applies the given UDF to the 'body_cleaned' and 'title_cleaned' columns of the input DataFrame and returns the modified DataFrame.
         """
         df = df.withColumn('chk_radical_post_(body_cleaned)', chk_radical_udf(df['body_cleaned']))
-        df = df.withColumn('chk_radical_post_(title_cleaned)', chk_radical_udf(df['title_cleaned']))
+        df = df.withColumn('chk_radical_post_(submission_cleaned)', chk_radical_udf(df['submission_cleaned']))
         return df
 
     def get_radical_class_df(self, df):
@@ -85,7 +86,7 @@ class LLMClassification():
 
 
 if __name__ == '__main__':
-    llm = LLMClassification()
+    llm = LLMClassification('.env')
     df = llm.get_processed_df()
     llm.get_radical_class_df(df)
 

@@ -38,11 +38,11 @@ class data_retrieval():
             option("driver", "com.mysql.jdbc.Driver"). \
             option("user", db_user). \
             option("password", db_password). \
-            option("query", "select * from proj_radical_sparks3"). \
+            option("query", "select * from proj_radical_sparks"). \
             load()
 
         return df_mysql
 
 if __name__ == "__main__":
     dp = data_retrieval()
-    dp.get_data('/Users/johnnytay/Library/CloudStorage/OneDrive-Personal/My NUS Mtech EBAC course/Semester 3/Practice Module/bead_pyspark/.env')
+    dp.get_data('.env')
