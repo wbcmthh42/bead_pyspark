@@ -38,14 +38,14 @@ class DataProcessing():
         Clean the body and title columns of the input dataframe using the provided clean_text_udf function and return the modified dataframe.
         """
         df = df.withColumn('body_cleaned', clean_text_udf(df['body']))
-        df = df.withColumn('title_cleaned', clean_text_udf(df['title']))
+        df = df.withColumn('submission_cleaned', clean_text_udf(df['submission']))
         return df
 
-    def get_clean_table(self):
+    def get_clean_table(self, env_file_path):
         """
         This function retrieves a clean table by getting data from a specified location, applying a user-defined function to clean the text, and returning the resulting DataFrame.
         """
-        df = self.get_data('/Users/johnnytay/Library/CloudStorage/OneDrive-Personal/My NUS Mtech EBAC course/Semester 3/Practice Module/bead_pyspark/.env')
+        df = self.get_data(env_file_path)
         clean_text_udf = udf(self.clean_text, StringType())
         df = self.clean_body_title(df, clean_text_udf)
         # df.show()
@@ -53,4 +53,4 @@ class DataProcessing():
 
 if __name__ == '__main__':
     dp = DataProcessing()
-    dp.get_clean_table()
+    dp.get_clean_table('.env')
