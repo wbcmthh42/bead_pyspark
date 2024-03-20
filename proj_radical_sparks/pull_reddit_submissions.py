@@ -10,7 +10,7 @@ import os
 
 
 class reddit_submission():
-    def __init__(self):
+    def __init__(self, env_file_path):
         """
         Initialize the class with environment variables loaded from the .env file.
         Set instance variables for database connection details, client ID, client secret, user agent, Reddit username, and password.
@@ -18,7 +18,7 @@ class reddit_submission():
         """
 
         # Load environment variables from .env file
-        load_dotenv('/Users/des/Desktop/bead_pyspark/proj_radical_sparks/.env')
+        load_dotenv(env_file_path)
         print(os.getenv('CLIENT_ID'))
 
         self.reddit = praw.Reddit(
@@ -123,6 +123,6 @@ class reddit_submission():
 
 
 if __name__ == "__main__":
-    get_reddit_data = reddit_submission()
+    get_reddit_data = reddit_submission('.env')
     # get_reddit_data.retrieve_list_of_submission_id(['Singapore'], 100, './proj_radical_sparks/new_100_submission.csv')
-    get_reddit_data.process_reddit_data('/Users/des/Desktop/bead_pyspark/proj_radical_sparks/new_100_submission.csv')
+    get_reddit_data.process_reddit_data('new_100_submission.csv')
