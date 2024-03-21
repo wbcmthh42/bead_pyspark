@@ -104,6 +104,6 @@ class LLMClassification():
 
 if __name__ == '__main__':
     llm = LLMClassification('.env')
-    df = llm.get_processed_df(50) #use first 50 rows to test first
+    df = llm.get_processed_df(100) #use first 50 rows to test first
     llm.get_radical_class_df(df)
 
