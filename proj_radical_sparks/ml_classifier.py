@@ -62,8 +62,12 @@ class data_retrieval():
         # regular expression tokenizer
         regexTokenizer = RegexTokenizer(inputCol="body_cleaned", outputCol="words", pattern="\\W")
         # stop words
-        add_stopwords = ["i", "we", "he", "she", "is", "like", "and", "the"]
-        stopwordsRemover = StopWordsRemover(inputCol="words", outputCol="filtered").setStopWords(add_stopwords)
+        stopwordsRemover = StopWordsRemover(inputCol="words", outputCol="filtered")
+        stopwords = stopwordsRemover.getStopWords()  # Get the default stop words
+        # Add additional stop words if needed
+        additional_stopwords = ["i", "we", "he", "she", "is", "like", "and", "the"]
+        stopwords += additional_stopwords
+        stopwordsRemover.setStopWords(stopwords)
         # TFIDF
         hashingTF = HashingTF(inputCol="filtered", outputCol="rawFeatures", numFeatures=10000)
         idf = IDF(inputCol="rawFeatures", outputCol="features", minDocFreq=5)  # minDocFreq: remove sparse terms
@@ -95,7 +99,7 @@ class data_retrieval():
                 .orderBy("probability", ascending=False) \
                 .show(n=20, truncate=30)
 
-    def model_evaluation(self):
+    def model_evaluation(self, results):
         evaluator = MulticlassClassificationEvaluator(labelCol="label", predictionCol="prediction",
                                                       metricName="accuracy")
         # ParamGrid
@@ -160,14 +164,17 @@ class data_retrieval():
         # except Exception as e:
         #     raise RuntimeError("Error while calculating confusion matrix", e) from e
 
-        print(f"Test Accuracy: {accuracy:.2f}")
-        print(f"Precision: {precision:.2f}")
-        print(f"Recall: {recall:.2f}")
-        print(f"F1 Score: {f1:.2f}")
+        with open(results, 'w') as f:
+            f.write(f"Test Accuracy: {accuracy:.2f}\n")
+            f.write(f"Precision: {precision:.2f}\n")
+            f.write(f"Recall: {recall:.2f}\n")
+            f.write(f"F1 Score: {f1:.2f}\n")
 
-        return accuracy, precision, recall, f1
-
-
+        print(f"Test Accuracy: {accuracy:.2f}\n")
+        print(f"Precision: {precision:.2f}\n")
+        print(f"Recall: {recall:.2f}\n")
+        print(f"F1 Score: {f1:.2f}\n")
+        print(f"Metrics saved in eval_metrics.txt")
 
 
 if __name__ == "__main__":
@@ -176,4 +183,4 @@ if __name__ == "__main__":
     dp.train_test_split()
     dp.text_processing_for_model()
     dp.model_training('Random_forest')
-    dp.model_evaluation()
+    dp.model_evaluation('eval_metrics.txt')
