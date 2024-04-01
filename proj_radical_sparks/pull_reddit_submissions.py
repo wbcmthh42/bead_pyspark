@@ -102,7 +102,7 @@ class reddit_submission():
             dfComment['dt'] = pd.to_datetime(dfComment['timestamp']).dt.strftime('%Y-%m-%d')
             dfComment['author'] = dfComment['author'].apply(lambda x: str(x))
 
-            data_folder = f'./reddit_data_folder/{submission_id}/'
+            data_folder = f'./reddit_id_data_folder/{submission_id}/'
 
             if not os.path.exists(data_folder):
                 os.makedirs(data_folder)
@@ -124,5 +124,5 @@ class reddit_submission():
 
 if __name__ == "__main__":
     get_reddit_data = reddit_submission('.env')
-    # get_reddit_data.retrieve_list_of_submission_id(['Singapore'], 100, './proj_radical_sparks/new_100_submission.csv')
-    get_reddit_data.process_reddit_data('new_100_submission.csv')
+    # get_reddit_data.retrieve_list_of_submission_id(['Singapore'], 100, './proj_radical_sparks/new_25_submission.csv')
+    get_reddit_data.process_reddit_data('new_35_submission.csv')

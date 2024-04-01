@@ -1,4 +1,4 @@
-from retrieve_with_pyspark import data_retrieval
+# from retrieve_labelled_data_with_pyspark import labelled_data_retrieval
 from pyspark.sql.functions import udf
 from pyspark.sql.types import StringType
 import re
@@ -9,19 +9,6 @@ os.environ['PYSPARK_PYTHON'] = sys.executable
 os.environ['PYSPARK_DRIVER_PYTHON'] = sys.executable
 
 class DataProcessing():
-    def get_data(self, env_path):
-        """
-        Retrieve data using the specified environment path.
-
-        Args:
-            env_path (str): The path to the environment.
-
-        Returns:
-            DataFrame: The retrieved data.
-        """
-        dp = data_retrieval()
-        df = dp.get_data(env_path)
-        return df
 
     def clean_text(self, text):
         """
@@ -41,16 +28,10 @@ class DataProcessing():
         df = df.withColumn('submission_cleaned', clean_text_udf(df['submission']))
         return df
 
-    def get_clean_table(self, env_file_path):
+    def get_clean_table(self, df):
         """
         This function retrieves a clean table by getting data from a specified location, applying a user-defined function to clean the text, and returning the resulting DataFrame.
         """
-        df = self.get_data(env_file_path)
         clean_text_udf = udf(self.clean_text, StringType())
         df = self.clean_body_title(df, clean_text_udf)
-        # df.show()
         return df
-
-if __name__ == '__main__':
-    dp = DataProcessing()
-    dp.get_clean_table('.env')

@@ -11,6 +11,8 @@ from pyspark.mllib.evaluation import MulticlassMetrics
 from pyspark.sql.types import FloatType
 import pyspark.sql.functions as F
 
+from data_processing import DataProcessing
+
 class data_retrieval():
     def __init__(self):
         """
@@ -47,16 +49,30 @@ class data_retrieval():
             option("driver", "com.mysql.jdbc.Driver"). \
             option("user", db_user). \
             option("password", db_password). \
-            option("query", "select *, CASE WHEN chk_radical_post_body = 'yes' THEN 1 ELSE 0 END as label from radical_classification"). \
+            option("query", "select *, CASE WHEN ground_truth_label = 'yes' THEN 1 ELSE 0 END as ground_truth_label_int from reddit_post_with_labels_human_review"). \
             load()
 
         self.df_mysql.show()
         return self.df_mysql
 
 
+    def get_processed_df(self):
+        """
+        Method to retrieve a processed DataFrame. 
+        This method initializes a DataProcessing object and retrieves a clean table. 
+        """
+        dr = DataProcessing()
+        self.df_mysql_clean = dr.get_clean_table(self.df_mysql)
+        return self.df_mysql_clean
+
     def train_test_split(self):
-        (self.training_data, self.testing_data) = self.df_mysql.randomSplit([0.8, 0.2], seed=42)
+        (self.training_data, self.testing_data) = self.df_mysql_clean.randomSplit([0.8, 0.2], seed=42)
+        self.training_data_pandas = self.training_data.toPandas()
+        self.testing_data_pandas = self.testing_data.toPandas()
+        self.training_data_pandas.to_csv("training_data.csv", index=False)
+        self.testing_data_pandas.to_csv("testing_data.csv", index=False)
         return self.training_data, self.testing_data
+
 
     def text_processing_for_model(self):
         # regular expression tokenizer
@@ -84,23 +100,23 @@ class data_retrieval():
     def model_training(self, model_type):
         # Logistic Regression
         if model_type == "logistic_regression":
-            self.model = LogisticRegression(maxIter=5, regParam=0.3, elasticNetParam=0)
+            self.model = LogisticRegression(labelCol="ground_truth_label_int", featuresCol="features", maxIter=5, regParam=0.3, elasticNetParam=0)
         elif model_type == "Decision_tree":
-            self.model = DecisionTreeClassifier(labelCol="label", featuresCol="features", maxDepth=5, minInfoGain=0.001, impurity="entropy")
+            self.model = DecisionTreeClassifier(labelCol="ground_truth_label_int", featuresCol="features", maxDepth=5, minInfoGain=0.001, impurity="entropy")
         elif model_type == "Random_forest":
-            self.model = RandomForestClassifier(labelCol="label", featuresCol="features", numTrees=100, maxDepth=4, maxBins=32)
+            self.model = RandomForestClassifier(labelCol="ground_truth_label_int", featuresCol="features", numTrees=100, maxDepth=4, maxBins=32)
         elif model_type == "Gradient_boosting":
-            self.model = GBTClassifier(labelCol="label", featuresCol="features", maxIter=5)
+            self.model = GBTClassifier(labelCol="ground_truth_label_int", featuresCol="features", maxIter=5)
 
         Model = self.model.fit(self.transformed_training_dataset)
         predictions = Model.transform(self.transformed_testing_dataset)
         predictions.filter(predictions['prediction'] == 1) \
-                .select("body", "label", "prediction") \
+                .select("body", "ground_truth_label_int", "prediction") \
                 .orderBy("probability", ascending=False) \
                 .show(n=20, truncate=30)
 
     def model_evaluation(self, results):
-        evaluator = MulticlassClassificationEvaluator(labelCol="label", predictionCol="prediction",
+        evaluator = MulticlassClassificationEvaluator(labelCol="ground_truth_label_int", predictionCol="prediction",
                                                       metricName="accuracy")
         # ParamGrid
         if isinstance(self.model, RandomForestClassifier):
@@ -129,21 +145,21 @@ class data_retrieval():
 
         # Precision, Recall, F1
         try:
-            evaluator = MulticlassClassificationEvaluator(labelCol="label", predictionCol="prediction",
+            evaluator = MulticlassClassificationEvaluator(labelCol="ground_truth_label_int", predictionCol="prediction",
                                                           metricName="weightedPrecision")
             precision = evaluator.evaluate(predictions)
         except Exception as e:
             raise RuntimeError("Error while calculating precision", e) from e
 
         try:
-            evaluator = MulticlassClassificationEvaluator(labelCol="label", predictionCol="prediction",
+            evaluator = MulticlassClassificationEvaluator(labelCol="ground_truth_label_int", predictionCol="prediction",
                                                           metricName="weightedRecall")
             recall = evaluator.evaluate(predictions)
         except Exception as e:
             raise RuntimeError("Error while calculating recall", e) from e
 
         try:
-            evaluator = MulticlassClassificationEvaluator(labelCol="label", predictionCol="prediction",
+            evaluator = MulticlassClassificationEvaluator(labelCol="ground_truth_label_int", predictionCol="prediction",
                                                           metricName="f1")
             f1 = evaluator.evaluate(predictions)
         except Exception as e:
@@ -180,7 +196,8 @@ class data_retrieval():
 if __name__ == "__main__":
     dp = data_retrieval()
     dp.get_data('.env')
+    dp.get_processed_df()
     dp.train_test_split()
     dp.text_processing_for_model()
-    dp.model_training('Random_forest')
-    dp.model_evaluation('eval_metrics.txt')
+    dp.model_training('logistic_regression')
+    dp.model_evaluation('eval_metrics_lr.txt')
