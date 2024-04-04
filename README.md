@@ -1,7 +1,7 @@
 # Project Radical Sparks
 ## Online Extremism Detection Using Big Data & AI
 
-![image](https://github.com/wbcmthh42/bead_pyspark/assets/104043746/cd49a824-b641-4cad-bb4c-5bc74f603c06)
+![image](https://github.com/wbcmthh42/bead_pyspark/assets/104043746/f66d29b9-930d-48a7-95ad-d99a7a4e8a45)
 
 
 ### Data Sources:
