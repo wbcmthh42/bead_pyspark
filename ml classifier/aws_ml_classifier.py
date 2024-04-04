@@ -144,10 +144,10 @@ def predicted_rad_to_s3(predictions,bucket,file_out,aws_key,aws_secret):
 
 
 if __name__ == "__main__":
-    aws_key = 'AKIAZQ3DRJBSUME2HSFC'   ######################## input aws key ####################
-    aws_secret = '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'    ################## input aws secret ######################
-    bucket = 'tansw-bead2024'
-    file = '1to8_labelled_dataset.csv'
+    aws_key = ''   ######################## input aws key ####################
+    aws_secret = ''    ################## input aws secret ######################
+    bucket = 'tansw-bead2024' ## input bucket ##
+    file = '1to8_labelled_dataset.csv' ##  input file ##
     
 
     data = s3_to_pyspark(bucket,file,aws_key,aws_secret) 
