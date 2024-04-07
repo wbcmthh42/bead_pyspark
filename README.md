@@ -1,8 +1,9 @@
 # Project Radical Sparks
 ## Online Extremism Detection Using Big Data & AI
 
-![image](https://github.com/wbcmthh42/bead_pyspark/assets/104043746/6ca9cd4c-40f1-4047-a5f4-4aa8327dc3c9)
+![image](https://github.com/wbcmthh42/bead_pyspark/assets/104043746/59747138-fc44-4bf2-aa77-f2d63ff428d5)
 
+![image](https://github.com/wbcmthh42/bead_pyspark/assets/104043746/b7fcc649-7aa6-4a69-bddd-a7749b44d50f)
 
 ### Data Sources:
 Data will primarily be derived from social media posts, initially focusing on posts from Reddit for the proof-of-concept (POC). Reddit, a globally popular social news platform has become increasingly popular amongst the younger generation5 which makes it a suitable data source for this project.
