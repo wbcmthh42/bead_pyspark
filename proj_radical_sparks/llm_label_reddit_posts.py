@@ -63,7 +63,7 @@ class DataLabelling():
             return response.choices[0].message.content
 
         message = [
-            {"role": "system", "content": "You help to assess if a text contains radical or extremist statements. Answer in 'yes' or 'no'"},
+            {"role": "system", "content": "You help to assess if a text contains radical or extremist statements. Only answer in lowercase 'yes' or 'no'. If you are not sure, just answer 'no'."},
             {"role": "user", "content": f"{text}"},
         ]
 

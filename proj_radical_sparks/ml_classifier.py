@@ -9,7 +9,9 @@ from pyspark.ml.evaluation import MulticlassClassificationEvaluator, BinaryClass
 from pyspark.ml.tuning import ParamGridBuilder, CrossValidator
 from pyspark.mllib.evaluation import MulticlassMetrics
 from pyspark.sql.types import FloatType
+from pyspark.ml import PipelineModel
 import pyspark.sql.functions as F
+from joblib import dump
 
 from data_processing import DataProcessing
 
@@ -95,9 +97,16 @@ class data_retrieval():
         self.transformed_testing_dataset = pipelineFit.transform(self.testing_data)
         self.transformed_training_dataset.show()
         self.transformed_testing_dataset.show()
+
+        # Save the pipeline model
+        vectorizer_checkpoint = "inference/vectorizer_checkpoint"
+        if not os.path.exists("inference"):
+            os.makedirs("inference")
+        pipelineFit.write().overwrite().save(vectorizer_checkpoint)
+
         return self.transformed_training_dataset, self.transformed_testing_dataset
 
-    def model_training(self, model_type):
+    def model_selection(self, model_type):
         # Logistic Regression
         if model_type == "logistic_regression":
             self.model = LogisticRegression(labelCol="ground_truth_label_int", featuresCol="features", maxIter=5, regParam=0.3, elasticNetParam=0)
@@ -108,21 +117,15 @@ class data_retrieval():
         elif model_type == "Gradient_boosting":
             self.model = GBTClassifier(labelCol="ground_truth_label_int", featuresCol="features", maxIter=5)
 
-        Model = self.model.fit(self.transformed_training_dataset)
-        predictions = Model.transform(self.transformed_testing_dataset)
-        predictions.filter(predictions['prediction'] == 1) \
-                .select("body", "ground_truth_label_int", "prediction") \
-                .orderBy("probability", ascending=False) \
-                .show(n=20, truncate=30)
-        
-        # Save the model checkpoint to a pkl file
-        model_checkpoint = "inference/model_checkpoint"
-        if not os.path.exists("inference"):
-            os.makedirs("inference")
-        Model.save(model_checkpoint)
-        print(f"Model checkpoint saved as {model_checkpoint}")
+        # Model = self.model.fit(self.transformed_training_dataset)
+        # predictions = Model.transform(self.transformed_testing_dataset)
+        # predictions.filter(predictions['prediction'] == 1) \
+        #         .select("body", "ground_truth_label_int", "prediction") \
+        #         .orderBy("probability", ascending=False) \
+        #         .show(n=20, truncate=30)
+    
 
-    def model_evaluation(self, results):
+    def model_training_evaluation(self, results):
         evaluator = MulticlassClassificationEvaluator(labelCol="ground_truth_label_int", predictionCol="prediction",
                                                       metricName="accuracy")
         # ParamGrid
@@ -199,6 +202,11 @@ class data_retrieval():
         print(f"F1 Score: {f1:.2f}\n")
         print(f"Metrics saved in eval_metrics.txt")
 
+        # Save the model checkpoint as a pickle file
+        model_checkpoint = "inference/model_checkpoint"
+        cvModel.write().overwrite().save(model_checkpoint)
+        print(f"Model checkpoint saved as {model_checkpoint}")
+        
 
 if __name__ == "__main__":
     dp = data_retrieval()
@@ -206,5 +214,5 @@ if __name__ == "__main__":
     dp.get_processed_df()
     dp.train_test_split()
     dp.text_processing_for_model()
-    dp.model_training('logistic_regression')
-    dp.model_evaluation('eval_metrics_lr.txt')
+    dp.model_selection('logistic_regression')
+    dp.model_training_evaluation('eval_metrics_lr.txt')

@@ -80,5 +80,5 @@ class load_to_mysql():
 
 if __name__ == "__main__":
     tomysql = load_to_mysql('.env')
-    tomysql.parquet_to_df('./reddit_id_data_folder/')
+    tomysql.parquet_to_df('./reddit_35_id_data_folder/')
     tomysql.save_to_mysql()
