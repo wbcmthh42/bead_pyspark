@@ -46,9 +46,9 @@ class RedditPost(BaseModel):
     author: str
     body: str
     submission: str
-    date: str
     upvotes: int
     upvote_ratio: float
+    date: str
 
 # %% [markdown]
 # ### Sample data
@@ -62,9 +62,9 @@ examples = [
     author: "jespep831",
     Body: "Travelling to Syria, looking for an ISIS supporter to marry. Any tips?",
     Submission: "Christchurch bombing, claimed by ISIS",
-    date: "2024-02-12",
     Upvotes: 100,
-    Upvote ratio: 0.6"""
+    Upvote ratio: 0.6,
+    date: "2024-02-12" """
     },
     {
     "example": """submission_id: "ksv2e83",
@@ -73,9 +73,9 @@ examples = [
     author: "youknowwho",
     Body: "Israel-Palestine conflict pisses me off, maybe an attack on Jews at a synagogue would help.",
     Submission: "Israel-Palestine conflict, 2024",
-    date: "2024-03-10",
     Upvotes: 120,
-    Upvote ratio: 0.78"""
+    Upvote ratio: 0.78,
+    date: "2024-03-10" """
     },
     {
     "example": """submission_id: "kq2e8y7",
@@ -84,9 +84,9 @@ examples = [
     author: "jihadboy123",
     Body: "I'm planning to attempt knife attacks against non-muslims in Singapore. If that doesn't work, I'll try suicide bombing.",
     Submission: "The Rise of ISIS",
-    date: "2024-01-09",
     Upvotes: 80,
-    Upvote ratio: 0.4"""
+    Upvote ratio: 0.4,
+    date: "2024-03-22" """
     },
     {
     "example": """submission_id: "kxbas8a",
@@ -95,9 +95,9 @@ examples = [
     author: "restrictden",
     Body: "How do I make C4 bombs? Just wanna kill the non-supporters",
     Submission: "Allahu Akbar",
-    date: "2023-05-09",
     Upvotes: 5,
-    Upvote ratio: 0.2"""
+    Upvote ratio: 0.2,
+    date: "2023-05-09" """
     },
     {"example": """submission_id: "ksbdf8s",
     comment_id: "kumasd8",
@@ -105,9 +105,9 @@ examples = [
     author: "rbelievernow",
     Body: "this place is so un-islamic, it needs to be destroyed",
     Submission: "where can I attack next",
-    date: "2023-09-22",
     Upvotes: 2,
-    Upvote ratio: 0.2"""
+    Upvote ratio: 0.2,
+    date: "2023-09-22" """
     }
 ]
 
@@ -176,9 +176,9 @@ formatted_results = [
         "author": str(item.author),
         "body": str(item.body),
         "submission": str(item.submission),
-        "date": str(item.date),
         "upvotes": int(item.upvotes),
-        "upvote_ratio": float(item.upvote_ratio)
+        "upvote_ratio": float(item.upvote_ratio),
+        "date": str(item.date)
     }
     for item in synthetic_results
 ]
