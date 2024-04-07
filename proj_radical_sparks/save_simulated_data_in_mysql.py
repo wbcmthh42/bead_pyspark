@@ -27,10 +27,12 @@ class load_to_mysql():
         """
 
         # Get a list of all Parquet files in the folder and its subfolders
-        self.simulated_df = pd.read_csv(csv_file)
-
+            
+        self.simulated_df = pd.read_csv(csv_file, encoding='utf-8')
         self.simulated_df['timestamp'] = pd.to_datetime(self.simulated_df['timestamp'], format='%d/%m/%y %H:%M')
         self.simulated_df['date'] = pd.to_datetime(self.simulated_df['date'], format='%d/%m/%y')
+        # Format 'date' column in 'YYYY-MM-DD' format
+        # self.simulated_df['date'] = self.simulated_df['date'].dt.strftime('%Y-%m-%d')
 
         return self.simulated_df
 
@@ -71,5 +73,5 @@ class load_to_mysql():
 
 if __name__ == "__main__":
     csvmysql = load_to_mysql('.env')
-    csvmysql.csv_to_df('labelled_radical_data.csv')
+    csvmysql.csv_to_df('labelled_radical_data_v4.csv')
     csvmysql.save_to_mysql()

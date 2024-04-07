@@ -12,6 +12,7 @@ from pyspark.sql.types import FloatType
 import pyspark.sql.functions as F
 
 from data_processing import DataProcessing
+import os
 
 class data_retrieval():
     def __init__(self):
@@ -114,6 +115,13 @@ class data_retrieval():
                 .select("body", "ground_truth_label_int", "prediction") \
                 .orderBy("probability", ascending=False) \
                 .show(n=20, truncate=30)
+        
+        # Save the model checkpoint to a pkl file
+        model_checkpoint = "inference/model_checkpoint.pkl"
+        if not os.path.exists("inference"):
+            os.makedirs("inference")
+        Model.save(model_checkpoint)
+        print(f"Model checkpoint saved as {model_checkpoint}")
 
     def model_evaluation(self, results):
         evaluator = MulticlassClassificationEvaluator(labelCol="ground_truth_label_int", predictionCol="prediction",
