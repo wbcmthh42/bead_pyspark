@@ -12,7 +12,6 @@ from pyspark.sql.types import FloatType
 import pyspark.sql.functions as F
 
 from data_processing import DataProcessing
-import os
 
 class data_retrieval():
     def __init__(self):
@@ -117,7 +116,7 @@ class data_retrieval():
                 .show(n=20, truncate=30)
         
         # Save the model checkpoint to a pkl file
-        model_checkpoint = "inference/model_checkpoint.pkl"
+        model_checkpoint = "inference/model_checkpoint"
         if not os.path.exists("inference"):
             os.makedirs("inference")
         Model.save(model_checkpoint)
