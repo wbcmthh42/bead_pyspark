@@ -1,0 +1,7 @@
+[theme] # You have to add this line
+
+primaryColor = '#FF4500' # Red
+
+backgroundColor = '#FF4500' # White
+
+secondaryBackgroundColor = '#E5E7E9' # Light Gray
