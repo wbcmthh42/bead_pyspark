@@ -67,10 +67,10 @@ class load_to_mysql():
         engine = create_engine('mysql+pymysql://user:passwd@host/database')
         # Create the table
         mycursor.execute(
-            "CREATE TABLE IF NOT EXISTS proj_radical_sparks (submission_id VARCHAR(255), comment_id VARCHAR(255), timestamp TIMESTAMP, author VARCHAR(255), body TEXT, submission TEXT, upvotes VARCHAR(255), upvote_ratio VARCHAR(255), date DATE)"
+            "CREATE TABLE IF NOT EXISTS proj_radical_sparks (submission_id VARCHAR(255), comment_id VARCHAR(255), timestamp TIMESTAMP, author VARCHAR(255), body TEXT, submission TEXT, sub_reddit VARCHAR(255),upvotes VARCHAR(255), upvote_ratio VARCHAR(255), date DATE)"
         )
 
-        sqlFormula = "INSERT INTO proj_radical_sparks (submission_id, comment_id, timestamp, author, body, submission, upvotes, upvote_ratio, date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE submission_id=VALUES(submission_id), comment_id=VALUES(comment_id), timestamp=VALUES(timestamp), author=VALUES(author), body=VALUES(body), submission=VALUES(submission), upvotes=VALUES(upvotes), upvote_ratio=VALUES(upvote_ratio), date=VALUES(date);"
+        sqlFormula = "INSERT INTO proj_radical_sparks (submission_id, comment_id, timestamp, author, body, submission, sub_reddit, upvotes, upvote_ratio, date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE submission_id=VALUES(submission_id), comment_id=VALUES(comment_id), timestamp=VALUES(timestamp), author=VALUES(author), body=VALUES(body), submission=VALUES(submission), sub_reddit=VALUES(sub_reddit), upvotes=VALUES(upvotes), upvote_ratio=VALUES(upvote_ratio), date=VALUES(date);"
 
         # Insert DataFrame data into the MySQL table
         mycursor.executemany(sqlFormula, self.df_combined.values.tolist())
@@ -80,5 +80,5 @@ class load_to_mysql():
 
 if __name__ == "__main__":
     tomysql = load_to_mysql('.env')
-    tomysql.parquet_to_df('./reddit_35_id_data_folder/')
+    tomysql.parquet_to_df('./reddit_33_id_data_folder/')
     tomysql.save_to_mysql()

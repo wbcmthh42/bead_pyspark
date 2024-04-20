@@ -83,7 +83,7 @@ class reddit_submission():
         submission_ids_list, submission_titles = self.get_submission_ids(file)
 
         for submission_id, submission_title in zip(submission_ids_list, submission_titles):
-            dfComment = pd.DataFrame(columns=['submission_id', 'comment_id', 'timestamp', 'author', 'body', 'submission','upvotes', 'upvote_ratio'])
+            dfComment = pd.DataFrame(columns=['submission_id', 'comment_id', 'timestamp', 'author', 'body', 'submission', 'sub_reddit', 'upvotes', 'upvote_ratio'])
             submission = self.reddit.submission(submission_id)
             submission.comments.replace_more(limit=None)
 
@@ -94,6 +94,7 @@ class reddit_submission():
                 dfComment.loc[index_loop, 'author'] = str(comment.author)
                 dfComment.loc[index_loop, 'body'] = comment.body
                 dfComment.loc[index_loop, 'submission'] = submission_title
+                dfComment.loc[index_loop, 'sub_reddit'] = submission.subreddit.display_name
                 dfComment.loc[index_loop, 'upvotes'] = submission.score
                 dfComment.loc[index_loop, 'upvote_ratio'] = submission.upvote_ratio
 
@@ -102,7 +103,7 @@ class reddit_submission():
             dfComment['dt'] = pd.to_datetime(dfComment['timestamp']).dt.strftime('%Y-%m-%d')
             dfComment['author'] = dfComment['author'].apply(lambda x: str(x))
 
-            data_folder = f'./reddit_35_id_data_folder/{submission_id}/'
+            data_folder = f'./reddit_33_id_data_folder/{submission_id}/'
 
             if not os.path.exists(data_folder):
                 os.makedirs(data_folder)

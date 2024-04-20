@@ -60,9 +60,9 @@ class load_to_mysql():
 
         mycursor = mydb.cursor()
 
-        mycursor.execute("CREATE TABLE IF NOT EXISTS reddit_post_with_labels (submission_id VARCHAR(255), comment_id VARCHAR(255), timestamp TIMESTAMP, author VARCHAR(255), body TEXT, submission TEXT, upvotes VARCHAR(255), upvote_ratio VARCHAR(255), date DATE, label VARCHAR(3));")
+        mycursor.execute("CREATE TABLE IF NOT EXISTS reddit_post_with_labels (submission_id VARCHAR(255), comment_id VARCHAR(255), timestamp TIMESTAMP, author VARCHAR(255), body TEXT, submission TEXT, sub_reddit VARCHAR(255), upvotes VARCHAR(255), upvote_ratio VARCHAR(255), date DATE, label VARCHAR(3));")
 
-        sqlFormula = "INSERT INTO reddit_post_with_labels (submission_id, comment_id, timestamp, author, body, submission, upvotes, upvote_ratio, date, label) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE submission_id=VALUES(submission_id), comment_id=VALUES(comment_id), timestamp=VALUES(timestamp), author=VALUES(author), body=VALUES(body), submission=VALUES(submission), upvotes=VALUES(upvotes), upvote_ratio=VALUES(upvote_ratio), date=VALUES(date), label=VALUES(label);"
+        sqlFormula = "INSERT INTO reddit_post_with_labels (submission_id, comment_id, timestamp, author, body, submission, sub_reddit, upvotes, upvote_ratio, date, label) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE submission_id=VALUES(submission_id), comment_id=VALUES(comment_id), timestamp=VALUES(timestamp), author=VALUES(author), body=VALUES(body), submission=VALUES(submission), sub_reddit=VALUES(sub_reddit), upvotes=VALUES(upvotes), upvote_ratio=VALUES(upvote_ratio), date=VALUES(date), label=VALUES(label);"
 
         # Insert DataFrame data into the MySQL table
         self.simulated_df['label'] = 'Yes'

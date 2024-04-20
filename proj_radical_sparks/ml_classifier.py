@@ -113,9 +113,9 @@ class data_retrieval():
         elif model_type == "Decision_tree":
             self.model = DecisionTreeClassifier(labelCol="ground_truth_label_int", featuresCol="features", maxDepth=5, minInfoGain=0.001, impurity="entropy")
         elif model_type == "Random_forest":
-            self.model = RandomForestClassifier(labelCol="ground_truth_label_int", featuresCol="features", numTrees=100, maxDepth=4, maxBins=32)
+            self.model = RandomForestClassifier(labelCol="ground_truth_label_int", featuresCol="features", numTrees=100, maxDepth=5, minInfoGain=0.001, impurity="entropy")
         elif model_type == "Gradient_boosting":
-            self.model = GBTClassifier(labelCol="ground_truth_label_int", featuresCol="features", maxIter=5)
+            self.model = GBTClassifier(labelCol="ground_truth_label_int", featuresCol="features", maxIter=5, maxDepth=5)
 
         # Model = self.model.fit(self.transformed_training_dataset)
         # predictions = Model.transform(self.transformed_testing_dataset)
@@ -144,6 +144,7 @@ class data_retrieval():
                          .build())
         elif isinstance(self.model, GBTClassifier):
             paramGrid = (ParamGridBuilder()
+                         .addGrid(self.model.maxDepth, [2, 5, 10])
                          .addGrid(self.model.maxIter, [5, 10])
                          .build())
         # n-fold CrossValidator
@@ -215,4 +216,4 @@ if __name__ == "__main__":
     dp.train_test_split()
     dp.text_processing_for_model()
     dp.model_selection('logistic_regression')
-    dp.model_training_evaluation('eval_metrics_lr.txt')
+    dp.model_training_evaluation('eval_metrics_lr_v2.txt')
