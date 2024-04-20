@@ -216,4 +216,4 @@ if __name__ == "__main__":
     dp.train_test_split()
     dp.text_processing_for_model()
     dp.model_selection('logistic_regression')
-    dp.model_training_evaluation('eval_metrics_lr_v2.txt')
+    dp.model_training_evaluation('eval_metrics_lr_v3.txt')
