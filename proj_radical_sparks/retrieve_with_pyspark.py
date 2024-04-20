@@ -38,7 +38,7 @@ class data_retrieval():
             option("driver", "com.mysql.jdbc.Driver"). \
             option("user", db_user). \
             option("password", db_password). \
-            option("query", "select * from proj_radical_sparks"). \
+            option("query", "select * from reddit_post_for_modelling"). \
             load()
 
         return df_mysql
