@@ -49,6 +49,7 @@ class RedditPost(BaseModel):
     upvotes: int
     upvote_ratio: float
     date: str
+    sub_reddit: str
 
 # %% [markdown]
 # ### Sample data
@@ -64,7 +65,8 @@ examples = [
     Submission: "Christchurch bombing, claimed by ISIS",
     Upvotes: 100,
     Upvote ratio: 0.6,
-    date: "2024-02-12" """
+    date: "2024-02-12",
+    sub_reddit: "singapore" """
     },
     {
     "example": """submission_id: "ksv2e83",
@@ -75,7 +77,8 @@ examples = [
     Submission: "Israel-Palestine conflict, 2024",
     Upvotes: 120,
     Upvote ratio: 0.78,
-    date: "2024-03-10" """
+    date: "2024-03-10",
+    sub_reddit: 'asksingapore' """
     },
     {
     "example": """submission_id: "kq2e8y7",
@@ -86,7 +89,8 @@ examples = [
     Submission: "The Rise of ISIS",
     Upvotes: 80,
     Upvote ratio: 0.4,
-    date: "2024-03-22" """
+    date: "2024-03-22",
+    sub_reddit: 'singapore' """
     },
     {
     "example": """submission_id: "kxbas8a",
@@ -97,7 +101,8 @@ examples = [
     Submission: "Allahu Akbar",
     Upvotes: 5,
     Upvote ratio: 0.2,
-    date: "2023-05-09" """
+    date: "2023-05-09",
+    sub_reddit: 'sgexams' """
     },
     {"example": """submission_id: "ksbdf8s",
     comment_id: "kumasd8",
@@ -107,7 +112,8 @@ examples = [
     Submission: "where can I attack next",
     Upvotes: 2,
     Upvote ratio: 0.2,
-    date: "2023-09-22" """
+    date: "2023-09-22",
+    sub_reddit: 'singapore' """
     }
 ]
 
@@ -178,7 +184,8 @@ formatted_results = [
         "submission": str(item.submission),
         "upvotes": int(item.upvotes),
         "upvote_ratio": float(item.upvote_ratio),
-        "date": str(item.date)
+        "date": str(item.date),
+        "sub_reddit": str(item.sub_reddit)
     }
     for item in synthetic_results
 ]
