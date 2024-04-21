@@ -85,6 +85,7 @@ class data_retrieval():
         # Add additional stop words if needed
         additional_stopwords = ["i", "we", "he", "she", "is", "like", "and", "the"]
         stopwords += additional_stopwords
+        print(stopwords)
         stopwordsRemover.setStopWords(stopwords)
         # TFIDF
         hashingTF = HashingTF(inputCol="filtered", outputCol="rawFeatures", numFeatures=10000)
