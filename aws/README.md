@@ -1,4 +1,4 @@
-## Data Pipeline Overview
+## Overview of Cloud Deployment in AWS
 
 This repository contains scripts for managing a data pipeline within an AWS environment. The names in parentheses within the file names specify the cloud services where each script is executed.
 
