@@ -1,4 +1,4 @@
-import findspark
+#import findspark
 import sys
 from pyspark.sql import SparkSession
 from pyspark.ml import Pipeline
@@ -10,8 +10,9 @@ from pyspark.ml.classification import NaiveBayes, RandomForestClassifier, Logist
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator, BinaryClassificationEvaluator
 from pyspark.ml.tuning import ParamGridBuilder, CrossValidator
 from pyspark.sql.functions import rand
-import boto3
+#import boto3
 
+# for local machine only
 def s3_to_pyspark(bucket_name,file_name,aws_key,aws_secret):
     s3 = boto3.resource('s3', aws_access_key_id = aws_key,
                           aws_secret_access_key= aws_secret )
@@ -23,35 +24,6 @@ def s3_to_pyspark(bucket_name,file_name,aws_key,aws_secret):
         .getOrCreate()
     data = spark.read.csv(file, header=True, inferSchema=True)
     
-    # findspark.init()
-    # spark = SparkSession \
-    #     .builder \
-    #     .appName("PySpark-TextClassifier") \
-    #     .config('spark.jars.packages', 'org.apache.hadoop:hadoop-aws:3.3.6') \
-    #     .config("spark.hadoop.fs.s3a.access.key", aws_key) \
-    #     .config("spark.hadoop.fs.s3a.secret.key", aws_secret) \
-    #     .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
-    #     .config('spark.hadoop.fs.s3a.aws.credentials.provider', 'org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider') \
-    #     .getOrCreate()
-
-    ############### Athena ##############################
-    
-    # spark = SparkSession \
-    #     .builder \
-    #     .appName("PySpark-TextClassifier") \
-    #     .config("spark.jars","https://s3.amazonaws.com/athena-downloads/drivers/JDBC/SimbaAthenaJDBC-2.0.33.1003/AthenaJDBC42-2.0.33.jar") \
-    #     .getOrCreate()
-    
-    # data = (
-    #     spark.read.format("jdbc")
-    #     .option("driver","com.simba.athena.jdbc.Driver")
-    #     .option("url", "jdbc:awsathena://athena.eu-west-2.amazonaws.com:443")
-    #     .option("AwsCredentialsProviderClass","com.simba.athena.amazonaws.auth.DefaultAWSCredentialsProviderChain")
-    #     .option("S3OutputLocation","s3://aws-athena-query-results")
-    #     # .option("database", "your_database")
-    #     .option("query","select 1 as test")
-    #     .load()
-    # )
     return data
 
 def preprocess_data(data):
@@ -84,6 +56,7 @@ def preprocess_data(data):
     # Fit pipeline to training data
     pipelineFit = pipeline.fit(training_data)
     training_data = pipelineFit.transform(training_data)
+    pipelineFit.write().overwrite().save("s3://tansw-bead2024/vec/")
     
     # Fit pipeline to testing data
     pipelineFit = pipeline.fit(testing_data)
@@ -105,6 +78,7 @@ def train_classifier(selection, training_data):
     
     # Fit the model to the training data
     trained_model = model.fit(training_data)
+    trained_model.write().overwrite().save("s3://tansw-bead2024/model/")
     print("Trained model:", model)
     
     return trained_model
@@ -144,18 +118,26 @@ def predicted_rad_to_s3(predictions,bucket,file_out,aws_key,aws_secret):
 
 
 if __name__ == "__main__":
-    aws_key = ''   ######################## input aws key ####################
-    aws_secret = ''    ################## input aws secret ######################
+    aws_key = ''   ######################## input aws key when using local machine only####################
+    aws_secret = ''    ################## input aws secret when using local machine only ######################
     bucket = 'tansw-bead2024' ## input bucket ##
-    file = '1to8_labelled_dataset.csv' ##  input file ##
+    file = 'reddit_posts_with_labels_after_human_review_manual_v4.csv' ##  input file ##
     
+    spark = SparkSession \
+        .builder \
+        .appName("PySpark-TextClassifier") \
+        .getOrCreate()
+    data = spark.read.csv("s3://tansw-bead2024/reddit_posts_with_labels_after_human_review_manual_v4.csv", header=True, inferSchema=True)
 
-    data = s3_to_pyspark(bucket,file,aws_key,aws_secret) 
+    # data = s3_to_pyspark(bucket,file,aws_key,aws_secret) for local machine only
     train, test = preprocess_data(data)
-    model = train_classifier('dt',train)
-    predictions = model.transform(test)
+    model = train_classifier('rf',train)
+    model2 = model.load("s3://tansw-bead2024/model/")
+   
+
+    predictions = model2.transform(test)
     evaluate_model(predictions)
-    predicted_rad_to_s3(predictions,bucket,'results',aws_key,aws_secret)
+    # predicted_rad_to_s3(predictions,bucket,'results',aws_key,aws_secret)
 
     # show detected radical comments
     predictions.filter(predictions['prediction'] == 1) \
