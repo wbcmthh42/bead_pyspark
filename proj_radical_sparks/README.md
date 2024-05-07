@@ -2,28 +2,28 @@
 ## Online Extremism Detection Using Big Data & AI
 
 ![image](https://github.com/wbcmthh42/bead_pyspark/assets/104043746/b813136a-96ff-4af7-9ecf-90cf3c0c6c6a)
+
+Test Local Inference Script:
 ![image](https://github.com/wbcmthh42/bead_pyspark/assets/104043746/b7fcc649-7aa6-4a69-bddd-a7749b44d50f)
 
-### Data Sources:
-Data will primarily be derived from social media posts, initially focusing on posts from Reddit for the proof-of-concept (POC). Reddit, a globally popular social news platform has become increasingly popular amongst the younger generation5 which makes it a suitable data source for this project.
+#### Here are the steps on how to run the scripts in a model training pipeline:
 
-### I.Reddit API: 
-The project will make use of the Reddit API to access and retrieve text posts from various subreddits related to Singapore. In addition, Python Reddit API Wrapper (PRAW), which is a Python package that allows for simple access to Reddit's API will also be used.
+1. The first step is to create a Python script named ``pull_reddit_submissions.py``. This script is responsible for collecting data from Reddit submissions saved in a csv file.
 
-### II.Simulated Data: 
-To address scenarios where there may be limited or even no user posts relating to radical activities/ideology found during the data collection period, the team may look into injecting simulated radical posts to fine-tune the model and test for performance.
+2. The next step is to run a script named ``save_in_mysql.py``. This script saves the data collected from Reddit submissions to a MySQL database.
 
-### Data Storage:
-The main data type consists of text strings and the stored data will be retrieved frequently for analysis. Therefore, an optimal choice for database storage would be a columnar database, designed to efficiently handle reads and writes. This type of database stores data in columns rather than rows, which aligns well with the requirements of frequent data retrieval.
+3. The script named ``save_simulated_data_in_mysql.py`` is then run. This script saves the simulated data, label them as 'positive' radical posts and saves it to the MySQL database.
 
-In this scenario, the team will explore storing the data in a Parquet file format, which offers several advantages, including efficient compression and columnar storage. With accessibility in mind, the team will strive to utilise cloud services for storage, otherwise, the data will be stored on a local system.
+4. Next, another Python script named ``retrieve_with_pyspark.py`` is likely used to retrieve the data from (2) from the MySQL database using PySpark. The script named ``llm_label_reddit_posts.py`` is then run. This script is responsible for labeling these Reddit posts.
 
-### Data Retrieval and Ingestion:
-Data retrieval can be done through a batch processing job cadence (either daily or more frequently when required) to collect recent posts and comments using the Reddit API. Following data retrieval through batch processing, the information undergoes preprocessing before being stored in the Parquet file format, as previously mentioned.
+5. To automate the run step 1 to 4, a shell script named ``pipeline_before_human_review.sh`` can also be executed. This script calls other scripts or functions to prepare the data for human review.
 
-### Data Analysis:
-The stored data is then retrieved and processed with PySpark for analysis which could include:
+6. After the data is labeled, a Jupyter Notebook named ``human_in_loop_review.ipynb`` is used for human review of the labeled data.
 
-#### I.Text processing
-#### II.Classification of data into either radical or non-radical posts by running the text through suitable LLMs to create labels for each post.
-#### III.Using a suitable dashboard to output selected metrics on the findings after the text has been processed and classified.
+7. Once the data is reviewed, a script named ``retrieve_labelled_data_with_pyspark.py`` is used to retrieve the labeled data from the MySQL database using PySpark.
+
+8. After the data is processed, a script named ``data_processing.py`` is used to perform additional data processing tasks like text cleaning etc. This script is called within another script named ``ml_classifier.py``. The script trains a machine learning classifier on the processed data.
+
+9. To automate the run step 6 to 8, a shell script named ``pipeline_after_human_review.sh`` can also be executed these steps together in a pipeline.
+
+10. Finally, the test set is also evaluated to find out the performance of the LLM classifier. This can be run in the script named ``llm_classification.py`` is then run.
