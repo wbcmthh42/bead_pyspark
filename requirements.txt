@@ -5,4 +5,5 @@ SQLAlchemy~=2.0.27
 python-dotenv~=1.0.1
 pyspark~=3.5.1
 openai~=1.13.3
-praw
+praw~=7.7.1
+openai~=1.13.3
