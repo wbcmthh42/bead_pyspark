@@ -27,3 +27,13 @@ Test Local Inference Script:
 9. To automate the run step 6 to 8, a shell script named ``pipeline_after_human_review.sh`` can also be executed these steps together in a pipeline.
 
 10. Finally, the test set is also evaluated to find out the performance of the LLM classifier. This can be run in the script named ``llm_classification.py`` is then run.
+
+#### Here are the steps on how to run the scripts for local inference pipeline (for testing before migration to cloud):
+
+1. The first step is to create a Python script named ``pull_reddit_submissions.py``. This script is responsible for collecting data from new unseen Reddit submissions.
+
+2. The next step is to run a script named ``save_in_mysql.py``. This script saves the data collected from Reddit submissions to a MySQL database.
+
+3. The script named ``retrieve_with_pyspark.py`` and ``data_processing.py`` is then run, and called in the ``llm_label_reddit_posts.py`` to do the inferencing and gives the inference results.
+
+4. To automate the run step 1 to 4, a shell script named ``inference.sh`` can also be executed.
