@@ -8,7 +8,7 @@ Test Local Inference Script:
 
 #### Here are the steps on how to run the scripts in a model training pipeline:
 
-1. The first step is to create a Python script named ``pull_reddit_submissions.py``. This script is responsible for collecting data from Reddit submissions saved in a csv file.
+1. The first step is to run a Python script named ``pull_reddit_submissions.py``. This script is responsible for collecting data from Reddit submissions saved in a csv file.
 
 2. The next step is to run a script named ``save_in_mysql.py``. This script saves the data collected from Reddit submissions to a MySQL database.
 
@@ -30,7 +30,7 @@ Test Local Inference Script:
 
 #### Here are the steps on how to run the scripts for local inference pipeline (for testing before migration to cloud):
 
-1. The first step is to create a Python script named ``pull_reddit_submissions.py``. This script is responsible for collecting data from new unseen Reddit submissions.
+1. The first step is to run a Python script named ``pull_reddit_submissions.py``. This script is responsible for collecting data from new unseen Reddit submissions.
 
 2. The next step is to run a script named ``save_in_mysql.py``. This script saves the data collected from Reddit submissions to a MySQL database.
 
